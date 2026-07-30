@@ -178,3 +178,84 @@ footer {
   th, td { font-size: 0.85rem; padding: 8px 4px; }
   nav a { padding: 8px 10px; font-size: 0.85rem; }
 }
+
+/* ===== Research article cards ===== */
+.article-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+ 
+.card {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 18px 20px;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+ 
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+ 
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+ 
+.card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+ 
+.card .meta {
+  display: block;
+  margin-top: 10px;
+  color: var(--accent);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+ 
+/* ===== Article (single piece) reading view ===== */
+.lead {
+  font-size: 1.1rem;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+ 
+.article-body h3 {
+  margin: 28px 0 8px;
+  font-size: 1.1rem;
+}
+ 
+.article-body p,
+.article-body ul {
+  margin: 0 0 14px;
+}
+ 
+.article-body ul {
+  padding-left: 22px;
+}
+ 
+.article-body code {
+  background: #eef2f7;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.9rem;
+}
+ 
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  text-decoration: none;
+  color: var(--accent);
+  font-size: 0.9rem;
+}

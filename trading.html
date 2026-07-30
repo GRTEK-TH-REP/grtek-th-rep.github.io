@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isaac &middot; Trading</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Isaac</h1>
+    <p class="tagline">Cybersecurity &nbsp;&middot;&nbsp; Quantitative Analysis &nbsp;&middot;&nbsp; Futures Trading</p>
+  </header>
+
+  <!-- NAV: copied on every page. Move class="active" to the current page's <a>. -->
+  <nav>
+    <a href="index.html">About</a>
+    <a href="skills.html">Skills</a>
+    <a href="projects.html">Projects</a>
+    <a href="trading.html" class="active">Trading</a>
+  </nav>
+
+  <main>
+
+    <!-- ============ TRADING PROGRESS ============ -->
+    <!-- Numbers update automatically from trades.js. No HTML editing needed. -->
+    <section id="trading">
+      <h2>Trading Progress</h2>
+      <p class="muted">CME futures. Updated as I take trades.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-num" id="stat-total">0</span>
+          <span class="stat-label">Net P&amp;L ($)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="stat-trades">0</span>
+          <span class="stat-label">Trades</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="stat-win">0%</span>
+          <span class="stat-label">Win Rate</span>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Instrument</th>
+            <th>Side</th>
+            <th>Result ($)</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody id="trade-rows">
+          <!-- filled automatically from trades.js -->
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Isaac</p>
+  </footer>
+
+  <!-- Trade data lives in this file so you can edit the "backend" easily -->
+  <script src="trades.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Read trades from trades.js (window.TRADES) and build the table.
+    const trades = window.TRADES || [];
+
+    const tbody = document.getElementById('trade-rows');
+    let total = 0;
+    let wins = 0;
+
+    trades.forEach(function (t) {
+      total += t.result;
+      if (t.result > 0) wins++;
+
+      const row = document.createElement('tr');
+      row.innerHTML =
+        '<td>' + t.date + '</td>' +
+        '<td>' + t.instrument + '</td>' +
+        '<td>' + t.side + '</td>' +
+        '<td class="' + (t.result >= 0 ? 'pos' : 'neg') + '">' +
+          (t.result >= 0 ? '+' : '') + t.result + '</td>' +
+        '<td>' + (t.note || '') + '</td>';
+      tbody.appendChild(row);
+    });
+
+    // Fill the big numbers.
+    document.getElementById('stat-total').textContent =
+      (total >= 0 ? '+' : '') + total.toLocaleString();
+    document.getElementById('stat-trades').textContent = trades.length;
+    document.getElementById('stat-win').textContent =
+      trades.length ? Math.round((wins / trades.length) * 100) + '%' : '0%';
+  </script>
+</body>
+</html>

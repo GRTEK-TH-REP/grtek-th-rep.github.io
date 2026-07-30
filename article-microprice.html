@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Isaac &middot; Microprice</title>
   <link rel="stylesheet" href="style.css">
+  <!-- MathJax: turns $...$ and $$...$$ into typeset equations -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
@@ -34,25 +44,32 @@
 
       <h3>The problem with the midpoint</h3>
       <p>
-        The standard mid = (bid + ask) / 2 assumes both sides are equally
-        authoritative. They're not. If the ask holds 100 contracts and the bid
-        only 2, the next trade is far more likely to hit the bid &mdash; price
-        is leaning down. Mid misses that entirely.
+        The standard midpoint
+        $$ \text{mid} = \frac{P_{\text{bid}} + P_{\text{ask}}}{2} $$
+        assumes both sides of the book are equally authoritative. They're not. If
+        the ask holds 100 contracts and the bid only 2, the next trade is far
+        more likely to hit the bid &mdash; price is leaning down. Mid misses
+        that entirely.
       </p>
 
       <h3>The microprice formula</h3>
       <p>
-        A common form weights by imbalance. If <code>I</code> is book imbalance
-        (e.g. bid-size / (bid-size + ask-size)), then microprice shifts toward
-        the heavier side:
+        A common form weights by book imbalance $I$, defined as:
       </p>
       <p>
-        <code>microprice = bid + I &times; (ask &minus; bid)</code>
+        $$ I = \frac{Q_{\text{bid}}}{Q_{\text{bid}} + Q_{\text{ask}}} $$
       </p>
       <p>
-        When the bid is heavy (<code>I &rarr; 1</code>), microprice moves up
-        toward the ask. When the ask is heavy (<code>I &rarr; 0</code>), it
-        moves down toward the bid.
+        where $Q_{\text{bid}}$ and $Q_{\text{ask}}$ are the resting sizes at the
+        best bid and ask. Microprice then shifts the midpoint toward the heavier
+        side:
+      </p>
+      <p>
+        $$ \text{microprice} = P_{\text{bid}} + I \times \left(P_{\text{ask}} - P_{\text{bid}}\right) $$
+      </p>
+      <p>
+        When the bid is heavy ($I \to 1$), microprice moves up toward the ask.
+        When the ask is heavy ($I \to 0$), it moves down toward the bid.
       </p>
 
       <h3>How I use it</h3>

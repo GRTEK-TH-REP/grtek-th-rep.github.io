@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Isaac &middot; VPIN</title>
   <link rel="stylesheet" href="style.css">
+  <!-- MathJax: turns $...$ and $$...$$ into typeset equations -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
@@ -44,8 +54,17 @@
       <ul>
         <li>Bucket trades into equal-volume buckets (not equal-time).</li>
         <li>Classify each bucket as buy- or sell-initiated using bulk classification.</li>
-        <li>VPIN = |buy-share &minus; sell-share| / total, summed over the last N buckets.</li>
+        <li>Sum the absolute imbalance over the last $N$ buckets.</li>
       </ul>
+
+      <p>Formally, over the last $N$ volume buckets:</p>
+
+      <p>
+        $$ \text{VPIN} = \frac{\displaystyle\sum_{i=1}^{N} \lvert V_i^{\text{buy}} - V_i^{\text{sell}} \rvert}{\displaystyle\sum_{i=1}^{N} V_i} $$
+      </p>
+
+      <p>where $V_i^{\text{buy}}$ and $V_i^{\text{sell}}$ are the buy- and sell-initiated volumes in bucket $i$, and $V_i = V_i^{\text{buy}} + V_i^{\text{sell}}$.</p>
+
       <p>The normalization that matters is volume, not time &mdash; that's the "V".</p>
 
       <h3>Where it helps me</h3>

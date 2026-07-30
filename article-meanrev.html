@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isaac &middot; Evening Mean-Reversion</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- MathJax: turns $...$ and $$...$$ into typeset equations -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+  <header>
+    <h1>Isaac</h1>
+    <p class="tagline">Cybersecurity &nbsp;&middot;&nbsp; Quantitative Analysis &nbsp;&middot;&nbsp; Futures Trading</p>
+  </header>
+
+  <!-- NAV: copied on every page. Move class="active" to the current page's <a>. -->
+  <nav>
+    <a href="index.html">About</a>
+    <a href="skills.html">Skills</a>
+    <a href="projects.html">Projects</a>
+    <a href="research.html" class="active">Research</a>
+    <a href="trading.html">Trading</a>
+  </nav>
+
+  <main>
+
+    <a class="back-link" href="research.html">&larr; Back to research</a>
+
+    <article class="article-body">
+      <h2>Evening Mean-Reversion &mdash; the NQ z-score signal</h2>
+      <p class="lead">My core edge. Fade short-term price dislocations from a rolling mean, evenings only, exit on time.</p>
+
+      <!-- ============ EDIT ARTICLE BODY BELOW ============ -->
+
+      <h3>Setup</h3>
+      <p>
+        The strategy runs on NQ futures. Order-book depth is resampled to a
+        1&nbsp;Hz grid, and for each UTC second the <em>last</em> depth-event
+        midpoint in that second wins. The midpoint is the plain arithmetic mid
+        of best bid and best ask, in pips:
+      </p>
+      <p>
+        $$ \text{mid}_t = \frac{P^{\text{bid}}_t + P^{\text{ask}}_t}{2} $$
+      </p>
+      <p>
+        Over a trailing window of $W = 120$ of these 1-Hz mid samples, I track
+        a running sum and sum-of-squares so the rolling statistics are $O(1)$
+        to update.
+      </p>
+
+      <h3>The signal</h3>
+      <p>
+        A rolling z-score of the midpoint, measured in <strong>sample</strong>
+        standard deviation (ddof&nbsp;=&nbsp;1). This is the key detail: a
+        population std would be wrong here. With the window mean
+        $\bar{m}_t = \tfrac{1}{n}\sum_{i=1}^{n} \text{mid}_{t-W+i}$ and
+        sample variance:
+      </p>
+      <p>
+        $$ s^2_t = \frac{1}{n-1} \sum_{i=1}^{n} \left(\text{mid}_{t-W+i} - \bar{m}_t\right)^2 $$
+      </p>
+      <p>the signal is</p>
+      <p>
+        $$ z_t = \frac{\text{mid}_t - \bar{m}_t}{s_t} $$
+      </p>
+      <p>
+        Note the window is updated <em>before</em> $z$ is computed, so the value
+        at time $t$ includes $\text{mid}_t$ itself. The z-score is undefined
+        until at least 2 samples are in the window.
+      </p>
+
+      <h3>Entry rules</h3>
+      <p>
+        Entries require $|z| > 1.5$ using <em>strict</em> inequality, and only
+        during the evening session. Outside the window or below threshold,
+        the position is flat.
+      </p>
+      <p>
+        $$ \text{signal}_t = \begin{cases} \text{LONG} & \text{if } z_t < -1.5 \\[4pt] \text{SHORT} & \text{if } z_t > +1.5 \\[4pt] \text{FLAT} & \text{otherwise} \end{cases} $$
+      </p>
+      <p>
+        The direction is fade: a mid stretched far <em>below</em> its recent
+        mean ($z < -1.5$) is bought, one stretched far <em>above</em>
+        ($z > 1.5$) is sold.
+      </p>
+
+      <h3>Session gate</h3>
+      <p>
+        The evening window is Central Time, $17{:}00$ through $23{:}59$ CT
+        inclusive. Concretely, entries are suppressed unless
+        $17 \le \text{ct\_hour} \le 23$, where the hour is DST-aware
+        (America/Chicago). This captures the re-open after the afternoon
+        break.
+      </p>
+
+      <h3>Exit and position management</h3>
+      <p>
+        Positions are one-at-a-time and exit on <strong>time</strong>, not
+        target: a flat 300-second hold, then out regardless. The harness layers
+        daily fences on top &mdash; a $+\$500$ cap and a $-\$1000$ stop, after
+        which trading halts for the day.
+      </p>
+
+      <h3>What is deliberately not here</h3>
+      <p>
+        This is the stripped-down, validated version. I tested spread gates and
+        microprice gates; both <em>hurt</em>, so they're gone. There's also a
+        VPIN toxicity hook in the code, but in production it's disabled
+        (the cap is set above VPIN's $[0,1]$ range so it can never fire) &mdash;
+        gating on toxicity removed edge here too.
+      </p>
+
+      <h3>Why it works (hand-wave)</h3>
+      <p>
+        Evening NQ sessions are thinner and choppier. Short-term dislocations
+        from a 2-minute mean tend to get mean-reverted by the next wave of
+        liquidity, and the time-based exit harvests that snap-back without
+        trying to pick a top. It's a regime bet, not a forecasting model.
+      </p>
+
+      <!-- ============ END EDITABLE ARTICLE BODY ============ -->
+    </article>
+
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Isaac</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

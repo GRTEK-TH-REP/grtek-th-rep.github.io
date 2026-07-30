@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isaac &middot; Research</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Isaac</h1>
+    <p class="tagline">Cybersecurity &nbsp;&middot;&nbsp; Quantitative Analysis &nbsp;&middot;&nbsp; Futures Trading</p>
+  </header>
+
+  <!-- NAV: copied on every page. Move class="active" to the current page's <a>. -->
+  <nav>
+    <a href="index.html">About</a>
+    <a href="skills.html">Skills</a>
+    <a href="projects.html">Projects</a>
+    <a href="research.html" class="active">Research</a>
+    <a href="trading.html">Trading</a>
+  </nav>
+
+  <main>
+
+    <!-- ============ RESEARCH INDEX ============ -->
+    <!-- To add a new article: copy one <a class="card"> block, change the
+         title/description/date, and set its href to your new article file
+         (e.g. href="article-my-indicator.html"). -->
+    <section id="research">
+      <h2>Research &amp; Indicators</h2>
+      <p class="muted">Notes on market-microstructure indicators I design and use.</p>
+
+      <div class="article-list">
+
+        <a class="card" href="article-vpin.html">
+          <h3>VPIN &mdash; Volume-Synchronized Probability of Informed Trading</h3>
+          <p>How I think about order-flow toxicity, why bulk-classification matters, and where the metric helps (and where it doesn't).</p>
+          <span class="meta">Read article</span>
+        </a>
+
+        <a class="card" href="article-microprice.html">
+          <h3>Microprice &mdash; A Better Mid</h3>
+          <p>Why the midpoint underweights resting liquidity, and how a book-imbalanced microprice tracks true equilibrium more honestly.</p>
+          <span class="meta">Read article</span>
+        </a>
+
+        <!-- TEMPLATE for a new article card: copy this block
+        <a class="card" href="article-your-slug.html">
+          <h3>Article Title</h3>
+          <p>One-line description of what this article is about.</p>
+          <span class="meta">Read article</span>
+        </a>
+        -->
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Isaac</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isaac &middot; VPIN</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Isaac</h1>
+    <p class="tagline">Cybersecurity &nbsp;&middot;&nbsp; Quantitative Analysis &nbsp;&middot;&nbsp; Futures Trading</p>
+  </header>
+
+  <!-- NAV: copied on every page. Move class="active" to the current page's <a>. -->
+  <nav>
+    <a href="index.html">About</a>
+    <a href="skills.html">Skills</a>
+    <a href="projects.html">Projects</a>
+    <a href="research.html" class="active">Research</a>
+    <a href="trading.html">Trading</a>
+  </nav>
+
+  <main>
+
+    <a class="back-link" href="research.html">&larr; Back to research</a>
+
+    <article class="article-body">
+      <h2>VPIN &mdash; Volume-Synchronized Probability of Informed Trading</h2>
+      <p class="lead">A toxicity gauge. High VPIN means the book is absorbing one-sided flow that's likely informed &mdash; a warning, not a signal.</p>
+
+      <!-- ============ EDIT ARTICLE BODY BELOW ============ -->
+
+      <h3>The idea</h3>
+      <p>
+        VPIN (Easley, L&oacute;pez de Prado, O'Hara) estimates the chance that the
+        other side of your trade is informed. It improves on the original PIN by
+        dropping the need to fit a model &mdash; you just watch order flow in
+        real time.
+      </p>
+
+      <h3>How I compute it</h3>
+      <ul>
+        <li>Bucket trades into equal-volume buckets (not equal-time).</li>
+        <li>Classify each bucket as buy- or sell-initiated using bulk classification.</li>
+        <li>VPIN = |buy-share &minus; sell-share| / total, summed over the last N buckets.</li>
+      </ul>
+      <p>The normalization that matters is volume, not time &mdash; that's the "V".</p>
+
+      <h3>Where it helps me</h3>
+      <ul>
+        <li>Throttling entries when toxicity is spiking (adverse selection risk).</li>
+        <li>Sanity-checking a fill: if VPIN was high, my edge may be smaller than it looks.</li>
+      </ul>
+
+      <h3>Where it doesn't</h3>
+      <p>
+        VPIN is a <em>state</em> indicator, not a direction indicator. A high reading
+        tells you flow is toxic, not which way price goes next. Don't trade off it alone.
+      </p>
+
+      <!-- ============ END EDITABLE ARTICLE BODY ============ -->
+    </article>
+
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Isaac</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
